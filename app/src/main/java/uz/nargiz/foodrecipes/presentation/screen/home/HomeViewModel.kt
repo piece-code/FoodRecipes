@@ -4,9 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.orbitmvi.orbit.viewmodel.container
@@ -17,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getRecipesUseCase: RecipeUseCase.GetAllRecipes,
+    getRecipesUseCase: RecipeUseCase.GetAllRecipes,
     private val getCategoriesUseCase: CategoryUseCase.GetAllCategories,
     private val getRecipeUseCase: RecipeUseCase.GetRandomRecipe,
     private val getLanguage: LanguageUseCase.GetLanguageUseCase,

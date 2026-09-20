@@ -1,6 +1,5 @@
 package uz.nargiz.foodrecipes.presentation.screen.home
 
-import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -46,7 +45,6 @@ import uz.nargiz.foodrecipes.presentation.component.CategoryTab
 import uz.nargiz.foodrecipes.presentation.component.RecipeItem
 import uz.nargiz.foodrecipes.presentation.component.RecommendedItem
 import uz.nargiz.foodrecipes.presentation.theme.FoodRecipesTheme
-import uz.nargiz.foodrecipes.util.findActivity
 
 class HomeScreen: Screen {
     @Composable

@@ -23,12 +23,3 @@ fun String.toRecipeDetail(gson: Gson): CachedRecipe? {
     if (this.isEmpty()) return null
     return gson.fromJson(this, CachedRecipe::class.java)
 }
-
-fun Context.findActivity(): Activity? {
-    var ctx = this
-    while (ctx is ContextWrapper) {
-        if (ctx is Activity) return ctx
-        ctx = ctx.baseContext
-    }
-    return null
-}
