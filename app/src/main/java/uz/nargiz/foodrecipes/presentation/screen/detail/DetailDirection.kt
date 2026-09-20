@@ -6,4 +6,8 @@ import javax.inject.Inject
 class DetailDirection @Inject constructor(
     private val navigator: AppNavigator
 ): DetailContract.Directions {
+
+    override fun navigateToBack() {
+        navigator.navigateBack()
+    }
 }

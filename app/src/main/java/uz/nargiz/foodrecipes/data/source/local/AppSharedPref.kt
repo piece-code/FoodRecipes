@@ -15,4 +15,12 @@ class AppSharedPref @Inject constructor(
     var lang: String
         get() = pref.getString("lang", "uz") ?: "uz"
         set(value) = pref.edit { putString("lang", value) }
+
+    var recommended: String
+        get() = pref.getString("recommended", "") ?: ""
+        set(value) = pref.edit { putString("recommended", value) }
+
+    var saved: String
+        get() = pref.getString("saved", "") ?: ""
+        set(value) = pref.edit { putString("saved", value) }
 }

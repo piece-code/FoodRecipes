@@ -28,9 +28,16 @@ val AppTypography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = HeadingFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 30.sp
+    ),
+
+    titleMedium = TextStyle(
+        fontFamily = HeadingFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 26.sp
     ),
 
     // Asosiy matnlarga BodyFontFamily beramiz

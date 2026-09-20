@@ -25,6 +25,7 @@ timber = "5.0.1"
 voyager = "1.1.0-beta03"
 foundationLayout = "1.12.1"
 pagingCommon = "3.5.1"
+appcompat = "1.8.0"
 
 [libraries]
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
@@ -69,6 +70,7 @@ voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", 
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommon" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCommon" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

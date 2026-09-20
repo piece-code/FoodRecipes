@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="food_recipes">Рецепты блюд</string>
+    <string name="ingredients">Ингредиенты</string>
+    <string name="recipe_of_the_day">Рецепт дня</string>
+    <string name="piece">шт.</string>
+    <string name="steps">Шаги</string>
+    <string name="category">Категория</string>
+    <string name="search">Поиск</string>
+    <string name="no_recipes_found">Рецепты не найдены</string>
+    <string name="list_is_empty">Список пуст</string>
+    <string name="search_by_ingridents">Поиск по ингредиентам</string>
+    <string name="saved">Сохранённые</string>
+</resources>

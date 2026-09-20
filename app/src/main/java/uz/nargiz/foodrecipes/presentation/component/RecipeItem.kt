@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,15 +26,16 @@ import uz.nargiz.foodrecipes.presentation.theme.FoodRecipesTheme
 @Composable
 fun RecipeItem(
     data: RecipeData,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .width(220.dp),
+        modifier = modifier
+            .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
@@ -56,12 +56,19 @@ fun RecipeItem(
                 Text(
                     modifier = Modifier.padding(vertical = 4.dp),
                     text = data.title,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 2,
+                    minLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                RatingStars()
+                Text(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    text = data.primaryCategory,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

@@ -1,12 +1,14 @@
 <resources>
-    <string name="app_name">Food Recipes</string>
-    <string name="our_recipes">Our Recipes</string>
-    <string name="recommended">Recommended</string>
-    <string name="view_full_list">VIEW FULL LIST</string>
-    <string name="prep_time">PREP TIME</string>
-    <string name="minute">minute</string>
-    <string name="cook_time">COOK TIME</string>
-    <string name="total_time">TOTAL TIME</string>
-    <string name="ingredients">Ingredients</string>
-    <string name="view_recipe">VIEW RECIPE</string>
+    <string name="app_name" translatable="false">Taomnoma</string>
+    <string name="food_recipes">Taomnoma</string>
+    <string name="ingredients">Masalliqlar</string>
+    <string name="recipe_of_the_day">Kun retsepti</string>
+    <string name="piece">ta</string>
+    <string name="steps">Qadamlar</string>
+    <string name="category">Kategoriya</string>
+    <string name="search">Qidiruv</string>
+    <string name="no_recipes_found">Retseptlar topilmadi</string>
+    <string name="list_is_empty">Ro\'yxat bo\'sh</string>
+    <string name="search_by_ingridents">Masalliqlar bo\'yicha qidirish</string>
+    <string name="saved">Saqlanganlar</string>
 </resources>

@@ -33,6 +33,9 @@ android {
     buildFeatures {
         compose = true
     }
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {
@@ -98,4 +101,7 @@ dependencies {
 //    paging
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.paging.compose)
+
+//    AppCompatDelegate
+    implementation("androidx.appcompat:appcompat:1.8.0")
 }

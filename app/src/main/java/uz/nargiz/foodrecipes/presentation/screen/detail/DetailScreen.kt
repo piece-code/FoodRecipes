@@ -1,7 +1,10 @@
 package uz.nargiz.foodrecipes.presentation.screen.detail
 
-import androidx.compose.foundation.Image
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,22 +20,26 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getViewModel
 import coil3.compose.AsyncImage
@@ -43,17 +50,36 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import org.orbitmvi.orbit.compose.collectAsState
 import uz.nargiz.foodrecipes.R
-import uz.nargiz.foodrecipes.domain.model.RecipeDetail
-import uz.nargiz.foodrecipes.presentation.component.AppButton
-import uz.nargiz.foodrecipes.presentation.component.RatingStars
+import uz.nargiz.foodrecipes.data.source.local.Repository.recipe
+import uz.nargiz.foodrecipes.presentation.component.PlayButton
 import uz.nargiz.foodrecipes.presentation.theme.FoodRecipesTheme
+import uz.nargiz.foodrecipes.util.getAvatar
+import androidx.core.net.toUri
 
 class DetailScreen(
-    val recipe: RecipeDetail.Data
+    val id: Int,
 ): Screen {
     @Composable
     override fun Content() {
+        val context = LocalContext.current
         val viewModel: DetailContract.ViewModel = getViewModel<DetailViewModel>()
+        LaunchedEffect(id) {
+            viewModel.onEventDispatcher(DetailContract.Event.Load(id))
+        }
+        LaunchedEffect(Unit) {
+            viewModel.container.sideEffectFlow.collect {
+                when(it) {
+                    is DetailContract.SideEffect.OpenVideo -> {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW, it.url.toUri())
+                        context.startActivity(intent)
+                    }
+                    is DetailContract.SideEffect.Message -> {
+                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
         FoodRecipesTheme {
             ScreenContent(
                 uiState = viewModel.collectAsState().value,
@@ -72,134 +98,199 @@ private fun ScreenContent(
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.surface)
+        .background(MaterialTheme.colorScheme.background)
     ) {
-        Box {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(330.dp)
-                    .hazeSource(hazeState)
-            ) {
-                AsyncImage(
-                    model = "",
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-            Column {
-                Spacer(modifier = Modifier.height(300.dp))
-                Card(
+        if (uiState.recipe != null) {
+            Box {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
-                    shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                    colors = CardDefaults.cardColors(Color.Transparent)
+                        .height(330.dp)
+                        .hazeSource(hazeState)
                 ) {
-                    LazyColumn(
+                    AsyncImage(
+                        model = uiState.recipe.imageUrl,
+                        contentDescription = uiState.recipe.title,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .hazeEffect(
-                                state = hazeState,
-                                style = HazeStyle(
-                                    blurRadius = 8.dp,
-                                    tint = HazeTint(MaterialTheme.colorScheme.surface)
-                                )
-                            )
-                            .padding(start = 21.dp, end = 21.dp, bottom = 52.dp),
-                        contentPadding = PaddingValues(vertical = 30.dp)
+                    )
+                    if (uiState.recipe.hasVideo) {
+                        PlayButton(
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                            onClick = { onEvent(DetailContract.Event.Play) }
+                        )
+                    }
+                }
+                Column {
+                    Spacer(modifier = Modifier.height(300.dp))
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface)
                     ) {
-                        item {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape),
-                                    painter = painterResource(R.drawable.img_burger),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop
-                                )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .hazeEffect(
+                                    state = hazeState,
+                                    style = HazeStyle(
+                                        blurRadius = 8.dp,
+                                        tint = HazeTint(MaterialTheme.colorScheme.surface.copy(1f))
+                                    )
+                                ),
+                            contentPadding = PaddingValues(vertical = 30.dp, horizontal = 20.dp)
+                        ) {
+                            item {
                                 Text(
-                                    modifier = Modifier
-                                        .padding(start = 14.dp)
-                                        .weight(1f),
-                                    text = "BY JANET BROKOWSKI",
-                                    style = MaterialTheme.typography.labelMedium,
+                                    text = uiState.recipe.title,
+                                    style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
-                                IconButton(
-                                    onClick = { onEvent(DetailContract.Event.Add) },
-                                    modifier = Modifier.size(36.dp),
-                                    colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary)
+                            }
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(top = 12.dp)
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Image(
-                                        modifier = Modifier.fillMaxSize(),
-                                        painter = painterResource(R.drawable.icon_add),
-                                        contentDescription = "add",
+                                    Box(
+                                        modifier = Modifier
+                                            .size(48.dp)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.surface)
+                                            .border(
+                                                width = 2.dp,
+                                                color = MaterialTheme.colorScheme.tertiary,
+                                                shape = CircleShape),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = uiState.recipe.author.getAvatar(),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(start = 14.dp)
+                                            .weight(1f),
+                                        text = uiState.recipe.author,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             }
-                        }
-                        item {
-                            Text(
-                                modifier = Modifier.padding(top = 20.dp),
-                                text = "Ginger & Garlic Noosle Soup",
-                                style = MaterialTheme.typography.displayLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                        item {
-                            Row(
-                                modifier = Modifier.padding(top = 20.dp),
-                            ) {
-                                RatingStars(starSize = 16.dp)
+                            item {
                                 Text(
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    text = "4.5k Reviews",
+                                    modifier = Modifier.padding(top = 16.dp),
+                                    text = uiState.recipe.description,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
-                        }
-                        item {
-                            Text(
-                                modifier = Modifier.padding(top = 20.dp),
-                                text = "Ginger Garlic Noosle Soup With Bok Choy is a nutritious, comforting, and fiu-fighting twenty minute recipe made with vegetarian broth, noodles, mushrooms, and baby bok choy.",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            item {
+                                Spacer(modifier = Modifier.padding(top = 20.dp).height(1.dp).fillMaxWidth().background(MaterialTheme.colorScheme.onSurfaceVariant))
+                            }
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(top = 16.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = stringResource(R.string.ingredients),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "${uiState.recipe.ingredients.size} ${stringResource(R.string.piece)}",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = stringResource(R.string.steps),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "${uiState.recipe.steps.size} ${stringResource(R.string.piece)}",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = stringResource(R.string.category),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = uiState.recipe.primaryCategory,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
+                            item {
+                                Spacer(modifier = Modifier.padding(top = 16.dp).height(1.dp).fillMaxWidth().background(MaterialTheme.colorScheme.onSurfaceVariant))
+                            }
+                            item {
+                                Text(
+                                    modifier = Modifier.padding(vertical = 20.dp),
+                                    text = stringResource(R.string.ingredients),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            item {
+                                recipe.ingredients.forEach { ingredient ->
+                                    Text(
+                                        modifier = Modifier.padding(vertical = 8.dp),
+                                        text = "${ingredient.amount} ${ingredient.name}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
+            IconButton(
+                onClick = { onEvent(DetailContract.Event.Back) },
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 14.dp)
+                    .size(36.dp)
+                    .align(Alignment.TopStart),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.icon_back),
+                    contentDescription = "back",
+                    modifier = Modifier.padding(3.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
-        IconButton(
-            onClick = { onEvent(DetailContract.Event.Back) },
-            modifier = Modifier
-                .padding(start = 16.dp, top = 14.dp)
-                .size(36.dp)
-                .align(Alignment.TopStart),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.icon_back),
-                contentDescription = "back",
-                modifier = Modifier.padding(3.dp),
-                tint = MaterialTheme.colorScheme.onBackground
-            )
+        if (uiState.isLoading){
+            Dialog(onDismissRequest = {}) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
         }
-        AppButton(
-            onClick = {},
-            text = stringResource(R.string.view_recipe),
-            modifier = Modifier
-                .padding(bottom = 32.dp)
-                .padding(horizontal = 20.dp)
-                .align(Alignment.BottomCenter)
-        )
     }
 }
 
@@ -207,7 +298,8 @@ private fun ScreenContent(
 private fun Preview() {
     FoodRecipesTheme {
         ScreenContent(
-            uiState = DetailContract.UIState(),
+            uiState = DetailContract.UIState(
+                recipe = recipe),
             onEvent = {}
         )
     }

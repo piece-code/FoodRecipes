@@ -22,14 +22,14 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = TextPrimary,
-    secondary = TextSecondary,
-    tertiary = Divider,
-    background = Background,
-    onBackground = TextPrimary,
-    surface = CardBackground,
-    onSurface = TextPrimary
+    primary = PrimaryLight,
+    onPrimary = TextOnPrimaryLight,
+    secondary = TextSecondaryLight,
+    tertiary = DividerLight,
+    background = BackgroundLight,
+    onBackground = TextPrimaryLight,
+    surface = CardBackgroundLight,
+    onSurface = TextPrimaryLight
 )
 
 @Composable

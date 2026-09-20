@@ -1,7 +1,7 @@
 package uz.nargiz.foodrecipes.di
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import uz.nargiz.foodrecipes.data.repository.CategoryRepositoryImpl
@@ -15,12 +15,12 @@ import uz.nargiz.foodrecipes.domain.repository.SearchRepository
 @InstallIn(SingletonComponent::class)
 interface RepositoryModule {
 
-    @Provides
+    @Binds
     fun provideRecipeRepository(impl: RecipeRepositoryImpl): RecipeRepository
 
-    @Provides
+    @Binds
     fun provideCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
 
-    @Provides
+    @Binds
     fun provideSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 }
