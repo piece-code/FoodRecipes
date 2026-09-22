@@ -1,32 +1,29 @@
-package uz.nargiz.foodrecipes.presentation.screen.detail
+package uz.nargiz.foodrecipes.presentation.screen.saved
 
 import org.orbitmvi.orbit.ContainerHost
 import uz.nargiz.foodrecipes.domain.model.RecipeDetail
 
-interface DetailContract {
+interface SavedContract {
     interface ViewModel: ContainerHost<UIState, SideEffect> {
         fun onEventDispatcher(event: Event)
     }
 
     sealed interface Event {
+        data class Recipe(val recipe: RecipeDetail.Data): Event
         object Back: Event
-        data class Load(val id: Int): Event
-        object Play: Event
-        data class Save(val id: Int): Event
     }
 
     sealed interface SideEffect {
-        data class OpenVideo(val url: String): SideEffect
         data class Message(val message: String): SideEffect
     }
 
     data class UIState(
         val isLoading: Boolean = false,
-        val recipe: RecipeDetail.Data? = null,
-        val isSaved: Boolean = false
+        val recipes: List<RecipeDetail.Data> = emptyList(),
     )
 
     interface Directions {
+        fun navigateToDetail(id: Int)
         fun navigateToBack()
     }
 }

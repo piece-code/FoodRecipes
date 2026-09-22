@@ -11,4 +11,5 @@
     <string name="list_is_empty">Список пуст</string>
     <string name="search_by_ingridents">Поиск по ингредиентам</string>
     <string name="saved">Сохранённые</string>
+    <string name="preparation_stages">Этапы подготовки</string>
 </resources>

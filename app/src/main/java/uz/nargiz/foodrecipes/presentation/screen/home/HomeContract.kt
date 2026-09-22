@@ -19,6 +19,7 @@ interface HomeContract {
         data class RecipeRecommended(val recipe: RecipeDetail.Data): Event
         data class Search(val isQuery: Boolean = true): Event
         data class Language(val code: String): Event
+        object Saved: Event
     }
 
     sealed interface SideEffect {
@@ -37,5 +38,6 @@ interface HomeContract {
         fun navigateToDetail(id: Int)
         fun navigateToSearch(isQuery: Boolean)
         fun navigateToCategory(category: CategoryData)
+        fun navigateToSaved()
     }
 }

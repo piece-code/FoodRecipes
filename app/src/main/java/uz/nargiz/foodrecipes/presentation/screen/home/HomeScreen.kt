@@ -75,7 +75,6 @@ private fun ScreenContent(
     onEvent: (HomeContract.Event) -> Unit
 ) {
     val recipes = uiState.recipes.collectAsLazyPagingItems()
-    val context = LocalContext.current
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -101,12 +100,24 @@ private fun ScreenContent(
                         .align(Alignment.CenterEnd),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(
+                        onClick = { onEvent(HomeContract.Event.Saved) },
+                        modifier = Modifier
+                            .size(36.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.img_save),
+                            contentDescription = "search",
+                            modifier = Modifier.padding(8.dp),
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                     TextButton(
                         onClick = {
                             onEvent(HomeContract.Event.Language(uiState.language))
                         },
                         modifier = Modifier
-                            .padding(end = 12.dp),
+                            .padding(horizontal = 12.dp),
                     ) {
                         Text(
                             text = uiState.language.uppercase(),

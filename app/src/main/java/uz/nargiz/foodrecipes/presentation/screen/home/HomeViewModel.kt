@@ -47,6 +47,8 @@ class HomeViewModel @Inject constructor(
                 directions.navigateToSearch(event.isQuery)
             is HomeContract.Event.Language ->
                 changeLanguage(event.code)
+            is HomeContract.Event.Saved ->
+                directions.navigateToSaved()
         }
     }
 

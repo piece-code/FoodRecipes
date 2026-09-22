@@ -11,4 +11,5 @@
     <string name="list_is_empty">Ro\'yxat bo\'sh</string>
     <string name="search_by_ingridents">Masalliqlar bo\'yicha qidirish</string>
     <string name="saved">Saqlanganlar</string>
+    <string name="preparation_stages">Tayyorlash bosqichlari</string>
 </resources>

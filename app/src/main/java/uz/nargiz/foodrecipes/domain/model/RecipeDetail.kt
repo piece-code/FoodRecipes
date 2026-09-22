@@ -40,6 +40,5 @@ sealed interface RecipeDetail {
         val stepLabel: String,
         val text: String,
         val images: List<String>
-
     )
 }

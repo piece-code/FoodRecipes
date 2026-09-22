@@ -50,11 +50,11 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import org.orbitmvi.orbit.compose.collectAsState
 import uz.nargiz.foodrecipes.R
-import uz.nargiz.foodrecipes.data.source.local.Repository.recipe
 import uz.nargiz.foodrecipes.presentation.component.PlayButton
 import uz.nargiz.foodrecipes.presentation.theme.FoodRecipesTheme
 import uz.nargiz.foodrecipes.util.getAvatar
 import androidx.core.net.toUri
+import uz.nargiz.foodrecipes.domain.model.RecipeDetail
 
 class DetailScreen(
     val id: Int,
@@ -250,18 +250,50 @@ private fun ScreenContent(
                             }
                             item {
                                 Text(
-                                    modifier = Modifier.padding(vertical = 20.dp),
+                                    modifier = Modifier.padding(top = 20.dp, end = 16.dp),
                                     text = stringResource(R.string.ingredients),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             item {
-                                recipe.ingredients.forEach { ingredient ->
+                                uiState.recipe.ingredients.forEach { ingredient ->
+                                    Row {
+                                        Text(
+                                            modifier = Modifier.padding(vertical = 8.dp),
+                                            text = "• ",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                        Text(
+                                            modifier = Modifier.padding(vertical = 8.dp),
+                                            text = "${ingredient.amount} ${ingredient.name}",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
+                            item {
+                                Text(
+                                    modifier = Modifier.padding(top = 20.dp),
+                                    text = stringResource(R.string.preparation_stages),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            item {
+                                uiState.recipe.steps.forEach { step ->
                                     Text(
-                                        modifier = Modifier.padding(vertical = 8.dp),
-                                        text = "${ingredient.amount} ${ingredient.name}",
-                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(top = 16.dp),
+                                        text = step.stepLabel,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(top = 8.dp),
+                                        text = step.text,
+                                        style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
@@ -274,7 +306,7 @@ private fun ScreenContent(
                 onClick = { onEvent(DetailContract.Event.Back) },
                 modifier = Modifier
                     .padding(start = 16.dp, top = 14.dp)
-                    .size(36.dp)
+                    .size(40.dp)
                     .align(Alignment.TopStart),
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -284,6 +316,24 @@ private fun ScreenContent(
                     painter = painterResource(R.drawable.icon_back),
                     contentDescription = "back",
                     modifier = Modifier.padding(3.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            IconButton(
+                onClick = { onEvent(DetailContract.Event.Save(uiState.recipe.id)) },
+                modifier = Modifier
+                    .padding(end = 16.dp, top = 14.dp)
+                    .size(40.dp)
+                    .align(Alignment.TopEnd),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface)
+            ) {
+                Icon(
+                    painter = painterResource(if (uiState.isSaved) R.drawable.img_saved else R.drawable.img_save),
+                    contentDescription = "save",
+                    modifier = Modifier.padding(8.dp),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -299,7 +349,7 @@ private fun Preview() {
     FoodRecipesTheme {
         ScreenContent(
             uiState = DetailContract.UIState(
-                recipe = recipe),
+                recipe = RecipeDetail.Data(0, "", "", "", "", "", emptyList(), emptyList(), "", "", "yut", "", "", "", false)),
             onEvent = {}
         )
     }

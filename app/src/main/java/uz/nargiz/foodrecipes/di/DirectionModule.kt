@@ -10,6 +10,8 @@ import uz.nargiz.foodrecipes.presentation.screen.detail.DetailContract
 import uz.nargiz.foodrecipes.presentation.screen.detail.DetailDirection
 import uz.nargiz.foodrecipes.presentation.screen.home.HomeContract
 import uz.nargiz.foodrecipes.presentation.screen.home.HomeDirection
+import uz.nargiz.foodrecipes.presentation.screen.saved.SavedContract
+import uz.nargiz.foodrecipes.presentation.screen.saved.SavedDirection
 import uz.nargiz.foodrecipes.presentation.screen.search.SearchContract
 import uz.nargiz.foodrecipes.presentation.screen.search.SearchDirection
 
@@ -28,4 +30,7 @@ interface DirectionModule {
 
     @Binds
     fun bindCategory(impl: CategoryDirection): CategoryContract.Directions
+
+    @Binds
+    fun bindSaved(impl: SavedDirection): SavedContract.Directions
 }
